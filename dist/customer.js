@@ -13,6 +13,24 @@
     }
   }
 
+  async function loadCatalog() {
+    try {
+      const rows = await db.request('products', { query:'active=eq.true&select=*&order=sort_order.asc,created_at.desc' });
+      if (!rows.length) return;
+      products = rows.map((product, index) => ({
+        ...product,
+        label: ({ necklace:'NECKLACE', ring:'RING', earring:'EARRING' }[product.category] || product.category.toUpperCase()),
+        crop: `${index < 9 ? 'crop-small' : 'crop-large'} p${(index % 13) + 1}`,
+        badge: product.badge || '',
+        material: product.material || '',
+        description: product.description || ''
+      }));
+      renderProducts();
+    } catch (error) {
+      console.warn('상품 목록을 불러오지 못해 기본 목록을 표시합니다.', error);
+    }
+  }
+
   const layer = document.createElement('div'); layer.className = 'member-layer'; layer.innerHTML = '<section class="member-card" id="memberCard"></section>'; document.body.appendChild(layer);
   function closeMember() { layer.classList.remove('open'); }
   function openMember() { layer.classList.add('open'); }
@@ -57,5 +75,6 @@
     closePanels(); openMember();
   }
 
-  document.getElementById('accountOpen').addEventListener('click', accountView); document.getElementById('checkout').addEventListener('click', checkoutView); track();
+  document.getElementById('accountOpen').addEventListener('click', accountView); document.getElementById('checkout').addEventListener('click', checkoutView); track(); loadCatalog();
 })();
+
