@@ -379,7 +379,7 @@
   <div class="toast" id="toast">장바구니에 담았습니다.</div>
 
   <script>
-    const products = [
+    let products = [
       { id: 1, name: 'Noir Rose Earrings', category: 'earring', label: 'EARRING', price: 49000, crop: 'crop-small p1', badge: 'NEW', material: '925 Silver', description: '입체적인 장미 모티프를 절제된 실버 톤으로 완성한 이어링입니다.' },
       { id: 2, name: 'Emerald Signet Ring', category: 'ring', label: 'RING', price: 78000, crop: 'crop-small p2', badge: 'BEST', material: '925 Silver · Emerald', description: '선명한 그린 스톤과 단단한 실버 밴드가 균형을 이루는 시그넷 링입니다.' },
       { id: 3, name: 'Coin Chain Necklace', category: 'necklace', label: 'NECKLACE', price: 94000, crop: 'crop-small p3', badge: '', material: '925 Silver', description: '빈티지 코인과 서로 다른 체인의 리듬이 매력적인 레이어드 네크리스입니다.' },
@@ -395,14 +395,14 @@
       { id: 13, name: 'Tiger Eye Tail Necklace', category: 'necklace', label: 'NECKLACE', price: 79000, crop: 'crop-large p13', badge: 'NEW', material: 'Tiger Eye · Silver', description: '깊은 갈색 타이거아이와 고래 꼬리 펜던트가 자연의 이미지를 담아냅니다.' }
     ];
 
-    const state = { current: null, qty: 1, cart: JSON.parse(localStorage.getItem('yeonjo-cart') || '[]') };
+    const state = { current: null, qty: 1, productFilter: 'all', cart: JSON.parse(localStorage.getItem('yeonjo-cart') || '[]') };
     const grid = document.getElementById('productGrid');
     const overlay = document.getElementById('overlay');
     const modal = document.getElementById('modal');
     const drawer = document.getElementById('drawer');
     const money = value => `₩${value.toLocaleString('ko-KR')}`;
 
-    function renderProducts(filter = 'all') {
+    function renderProducts(filter = state.productFilter) {
       grid.innerHTML = products.filter(p => filter === 'all' || p.category === filter).map(p => `
         <article class="product">
           <button class="product-image ${p.crop}" data-id="${p.id}" aria-label="${p.name} 상세 보기">${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</button>
@@ -460,7 +460,8 @@
     document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
       document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      renderProducts(btn.dataset.filter);
+      state.productFilter = btn.dataset.filter;
+      renderProducts();
     }));
     document.getElementById('qtyMinus').addEventListener('click', () => { state.qty = Math.max(1, state.qty - 1); document.getElementById('qty').textContent = state.qty; });
     document.getElementById('qtyPlus').addEventListener('click', () => { state.qty += 1; document.getElementById('qty').textContent = state.qty; });
@@ -493,3 +494,4 @@
   <script src="customer.js"></script>
 </body>
 </html>
+
