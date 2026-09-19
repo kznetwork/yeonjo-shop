@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="천연석과 실버의 결을 담은 YEONJO 주얼리 컬렉션">
+  <title>YEONJO — Handcrafted Jewelry</title>
+  <link rel="stylesheet" href="customer.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230d292c'/%3E%3Cpath d='M17 16l15 18 15-18M32 34v15' fill='none' stroke='%23d8b87b' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;600&display=swap');
+
+    :root {
+      --ink: #102c2f;
+      --ink-soft: #355356;
+      --paper: #f5f2eb;
+      --white: #fffdf8;
+      --line: #d8d4ca;
+      --gold: #b9914f;
+      --blue: #c7dce7;
+      --shadow: 0 24px 80px rgba(16, 44, 47, .14);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 16px;
+    }
+    button, input, select { font: inherit; }
+    button { color: inherit; }
+    a { color: inherit; text-decoration: none; }
+    .promo {
+      position: relative;
+      z-index: 20;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 52px;
+      color: #fff;
+      background: var(--ink);
+      font-size: .82rem;
+      letter-spacing: .04em;
+      text-align: center;
+    }
+    .promo button {
+      position: absolute;
+      right: 18px;
+      border: 0;
+      color: #fff;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 18;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      min-height: 74px;
+      padding: 0 5vw;
+      border-bottom: 1px solid rgba(16, 44, 47, .12);
+      background: rgba(245, 242, 235, .9);
+      backdrop-filter: blur(16px);
+    }
+    .brand {
+      font-family: 'Gowun Batang', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: .26em;
+    }
+    .nav-links { display: flex; gap: 28px; font-size: .88rem; }
+    .nav-actions { justify-self: end; display: flex; gap: 10px; }
+    .icon-btn {
+      min-width: 43px;
+      height: 43px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--white);
+      cursor: pointer;
+    }
+    .cart-count {
+      display: inline-grid;
+      min-width: 18px;
+      height: 18px;
+      place-items: center;
+      margin-left: -5px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--gold);
+      font-size: .68rem;
+      vertical-align: top;
+    }
+    .hero {
+      min-height: 670px;
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 10vw 8vw;
+    }
+    .eyebrow { color: var(--gold); font-size: .75rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+    h1, h2, h3 { margin: 0; font-family: 'Gowun Batang', serif; }
+    h1 { max-width: 600px; margin-top: 18px; font-size: clamp(3rem, 6vw, 6.3rem); font-weight: 400; line-height: .98; letter-spacing: -.05em; }
+    .hero-copy p { max-width: 430px; margin: 30px 0; color: var(--ink-soft); line-height: 1.8; }
+    .cta {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 18px;
+      padding: 15px 24px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: #fff;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: transform .25s ease, background .25s ease;
+    }
+    .cta:hover { transform: translateY(-2px); background: #1c4549; }
+    .hero-visual {
+      position: relative;
+      min-height: 540px;
+      background-color: var(--blue);
+      background-image: linear-gradient(180deg, rgba(16, 44, 47, .08), rgba(16, 44, 47, .25)), url('products-source.png');
+      background-size: 416% auto;
+      background-position: 47.5% 34.4%;
+      background-repeat: no-repeat;
+    }
+    .hero-visual::before {
+      content: 'NATURAL STONE · SILVER';
+      position: absolute;
+      right: 22px;
+      top: 24px;
+      color: rgba(255,255,255,.88);
+      font-size: .7rem;
+      letter-spacing: .18em;
+      writing-mode: vertical-rl;
+    }
+    .hero-note {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      max-width: 220px;
+      padding: 18px;
+      background: rgba(255,253,248,.9);
+      backdrop-filter: blur(10px);
+      font-family: 'Gowun Batang', serif;
+      line-height: 1.5;
+    }
+    .section { padding: 110px 6vw; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 48px; }
+    h2 { font-size: clamp(2rem, 4vw, 4rem); font-weight: 400; letter-spacing: -.04em; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter {
+      padding: 10px 17px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      background: transparent;
+      cursor: pointer;
+    }
+    .filter.active { border-color: var(--ink); color: #fff; background: var(--ink); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 18px; }
+    .product { min-width: 0; }
+    .product-image {
+      position: relative;
+      aspect-ratio: 1 / 1.08;
+      overflow: hidden;
+      border: 0;
+      width: 100%;
+      background-color: #e6e6e1;
+      background-image: url('products-source.png');
+      background-repeat: no-repeat;
+      cursor: pointer;
+      transition: transform .35s ease;
+    }
+    .product-image:hover { transform: translateY(-5px); }
+    .crop-small { background-size: 416.1% auto; }
+    .crop-large { background-size: 277.4% auto; }
+    .p1 { background-position: 15.8% 21.9%; }
+    .p2 { background-position: 47.5% 21.9%; }
+    .p3 { background-position: 79.1% 21.9%; }
+    .p4 { background-position: 15.8% 34.4%; }
+    .p5 { background-position: 47.5% 34.4%; }
+    .p6 { background-position: 79.1% 34.4%; }
+    .p7 { background-position: 15.8% 46.8%; }
+    .p8 { background-position: 47.5% 46.8%; }
+    .p9 { background-position: 79.1% 46.8%; }
+    .p10 { background-position: 18.8% 59.3%; }
+    .p11 { background-position: 75.2% 59.3%; }
+    .p12 { background-position: 18.8% 71.8%; }
+    .p13 { background-position: 75.2% 71.8%; }
+    .badge { position: absolute; left: 14px; top: 14px; padding: 6px 9px; color: #fff; background: var(--ink); font-size: .66rem; letter-spacing: .08em; }
+    .product-info { display: flex; justify-content: space-between; gap: 12px; padding-top: 16px; }
+    .product-info h3 { font-size: 1.08rem; }
+    .product-info small { display: block; margin-bottom: 5px; color: #6f7773; font-size: .7rem; letter-spacing: .1em; }
+    .price { white-space: nowrap; font-size: .9rem; font-weight: 600; }
+    .trust { background: var(--ink); color: #fff; }
+    .trust .section-head { align-items: start; }
+    .trust .section-head p { max-width: 410px; margin: 0; color: #bfd0d0; line-height: 1.8; }
+    .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(255,255,255,.2); }
+    .trust-item { padding: 34px 28px 20px 0; border-right: 1px solid rgba(255,255,255,.16); }
+    .trust-item:last-child { border-right: 0; }
+    .trust-item b { display: block; margin: 18px 0 9px; font-family: 'Gowun Batang', serif; font-size: 1.25rem; }
+    .trust-item p { margin: 0; color: #b7c8c9; font-size: .86rem; line-height: 1.7; }
+    .number { color: var(--gold); font-family: 'Gowun Batang', serif; }
+    .story { display: grid; grid-template-columns: 1fr 1fr; gap: 8vw; align-items: center; }
+    .story-art { min-height: 500px; background-image: url('products-source.png'); background-size: 277.4% auto; background-position: 75.2% 71.8%; background-repeat: no-repeat; }
+    .story-copy p { color: var(--ink-soft); line-height: 1.9; }
+    .quote { margin: 30px 0 0; padding-top: 24px; border-top: 1px solid var(--line); font-family: 'Gowun Batang', serif; font-size: 1.35rem; line-height: 1.6; }
+    .closing { padding: 84px 6vw; background: var(--blue); text-align: center; }
+    .closing p { margin: 20px auto 30px; color: var(--ink-soft); }
+    footer { display: flex; justify-content: space-between; gap: 20px; padding: 42px 6vw; color: #8fa3a4; background: #0a2225; font-size: .78rem; }
+    .overlay { position: fixed; inset: 0; z-index: 40; display: none; background: rgba(5, 19, 21, .68); backdrop-filter: blur(7px); }
+    .overlay.open { display: block; }
+    .modal {
+      position: fixed;
+      inset: 5vh 5vw;
+      z-index: 41;
+      display: none;
+      grid-template-columns: 1.08fr .92fr;
+      overflow: auto;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .modal.open { display: grid; }
+    .modal-image { min-height: 560px; background-image: url('products-source.png'); background-repeat: no-repeat; }
+    .modal-body { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 7vw; }
+    .close { position: absolute; right: 24px; top: 22px; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: transparent; cursor: pointer; }
+    .modal-body h2 { margin: 12px 0; font-size: clamp(2.2rem, 4vw, 4.2rem); }
+    .modal-price { font-size: 1.12rem; font-weight: 600; }
+    .description { color: var(--ink-soft); line-height: 1.8; }
+    .specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 20px 0; padding: 18px 0; border: solid var(--line); border-width: 1px 0; font-size: .78rem; }
+    .specs b { display: block; margin-bottom: 4px; font-size: .7rem; letter-spacing: .08em; }
+    .option-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0 20px; }
+    .option-row label { display: grid; gap: 7px; font-size: .78rem; }
+    select, .quantity { height: 46px; border: 1px solid var(--line); background: #fff; }
+    select { padding: 0 12px; }
+    .quantity { display: flex; align-items: center; justify-content: space-between; }
+    .quantity button { width: 38px; height: 100%; border: 0; background: transparent; cursor: pointer; }
+    .add { width: 100%; justify-content: center; }
+    .drawer {
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 52;
+      width: min(430px, 100%);
+      padding: 32px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      transform: translateX(105%);
+      transition: transform .35s ease;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+    .drawer-head h2 { font-size: 2rem; }
+    .cart-items { max-height: 58vh; overflow: auto; }
+    .cart-item { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .cart-item button { border: 0; color: #8a7770; background: none; cursor: pointer; }
+    .empty { padding: 50px 0; color: #7a8784; text-align: center; }
+    .total { display: flex; justify-content: space-between; padding: 24px 0; font-weight: 600; }
+    .toast { position: fixed; left: 50%; bottom: 28px; z-index: 70; padding: 13px 22px; border-radius: 99px; color: #fff; background: var(--ink); transform: translate(-50%, 120px); transition: transform .3s ease; }
+    .toast.show { transform: translate(-50%, 0); }
+
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-copy { min-height: 520px; padding: 90px 7vw 60px; }
+      .hero-visual { min-height: 560px; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .trust-grid { grid-template-columns: 1fr 1fr; }
+      .trust-item { border-bottom: 1px solid rgba(255,255,255,.16); }
+      .story { grid-template-columns: 1fr; }
+      .story-art { min-height: 560px; }
+      .modal { inset: 2vh 3vw; grid-template-columns: 1fr; }
+      .modal-image { min-height: 54vh; }
+      .modal-body { padding: 40px 7vw 55px; }
+    }
+    @media (max-width: 560px) {
+      .nav { min-height: 64px; padding: 0 18px; }
+      .brand { font-size: 1.2rem; }
+      .section { padding: 78px 18px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .grid { gap: 28px 10px; }
+      .product-info { display: block; }
+      .price { display: block; margin-top: 7px; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .trust-item { border-right: 0; }
+      .story-art { min-height: 430px; }
+      footer { flex-direction: column; }
+      .modal { inset: 0; }
+      .modal-image { min-height: 48vh; }
+      .specs { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="promo" id="promo"><span id="promoText">첫 구매 10% 할인 · 코드 WELCOME10</span><button aria-label="프로모션 닫기" id="promoClose">×</button></div>
+  <nav class="nav">
+    <div class="nav-links"><a href="#collection">COLLECTION</a><a href="#story">STORY</a></div>
+    <a class="brand" href="#">YEONJO</a>
+    <div class="nav-actions"><button class="icon-btn" aria-label="회원 메뉴 열기" id="accountOpen">ME</button><button class="icon-btn" aria-label="장바구니 열기" id="cartOpen">BAG</button><span class="cart-count" id="cartCount">0</span></div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Objects with a quiet glow</span>
+        <h1>빛은 오래<br>머무는 곳을<br>기억합니다.</h1>
+        <p>시간이 지날수록 더 깊어지는 천연석과 실버의 표정. 매일의 나에게 자연스럽게 스며드는 한 점을 소개합니다.</p>
+        <a class="cta" href="#collection">컬렉션 보기 <span>→</span></a>
+      </div>
+      <div class="hero-visual" role="img" aria-label="실버 체인 목걸이">
+        <div class="hero-note">손으로 고른 천연석과<br>시간을 들여 다듬은 실버</div>
+      </div>
+    </section>
+
+    <section class="section" id="collection">
+      <div class="section-head">
+        <div><span class="eyebrow">Curated pieces</span><h2>오늘의 컬렉션</h2></div>
+        <div class="filters" aria-label="상품 필터">
+          <button class="filter active" data-filter="all">전체</button>
+          <button class="filter" data-filter="necklace">네크리스</button>
+          <button class="filter" data-filter="ring">링</button>
+          <button class="filter" data-filter="earring">이어링</button>
+        </div>
+      </div>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <section class="section trust">
+      <div class="section-head"><h2>믿고 고를 수 있도록</h2><p>보이는 아름다움만큼 오래 곁에 둘 수 있는 품질과 경험을 중요하게 생각합니다.</p></div>
+      <div class="trust-grid">
+        <article class="trust-item"><span class="number">01</span><b>엄선한 소재</b><p>실버와 천연석의 결, 색, 균형을 한 점씩 살핍니다.</p></article>
+        <article class="trust-item"><span class="number">02</span><b>섬세한 검수</b><p>마감과 잠금 장치까지 출고 전 두 번 확인합니다.</p></article>
+        <article class="trust-item"><span class="number">03</span><b>정성스러운 포장</b><p>선물처럼 기분 좋은 포장으로 안전하게 보내드립니다.</p></article>
+        <article class="trust-item"><span class="number">04</span><b>오래가는 관리</b><p>소재에 맞는 관리법을 안내하고 수선을 도와드립니다.</p></article>
+      </div>
+    </section>
+
+    <section class="section story" id="story">
+      <div class="story-art" role="img" aria-label="타이거아이 펜던트 목걸이"></div>
+      <div class="story-copy"><span class="eyebrow">Our story</span><h2>매일의 마음을<br>닮은 주얼리</h2><p>YEONJO는 유행보다 사람의 취향이 오래 남는다고 믿습니다. 조금씩 다른 천연석의 무늬와 손끝에서 완성되는 실버의 표정은 착용하는 사람의 시간과 만나 비로소 하나뿐인 이야기가 됩니다.</p><p class="quote">“좋아하는 것을 고르는 일은<br>나를 더 잘 알아가는 일이니까요.”</p></div>
+    </section>
+
+    <section class="closing"><span class="eyebrow">A piece for your day</span><h2>당신의 오늘에 머물 한 점</h2><p>천천히 살펴보고, 오래 마음에 남는 것을 골라보세요.</p><a class="cta" href="#collection">다시 둘러보기 →</a></section>
+  </main>
+
+  <footer><span>YEONJO JEWELRY · SEOUL</span><span>© 2026 YEONJO. ALL RIGHTS RESERVED.</span></footer>
+
+  <div class="overlay" id="overlay"></div>
+  <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalName">
+    <div class="modal-image" id="modalImage"></div>
+    <div class="modal-body">
+      <button class="close" id="modalClose" aria-label="상세 닫기">×</button>
+      <span class="eyebrow" id="modalCategory"></span><h2 id="modalName"></h2><div class="modal-price" id="modalPrice"></div>
+      <p class="description" id="modalDescription"></p>
+      <div class="specs"><span><b>소재</b><span id="modalMaterial"></span></span><span><b>배송</b>2–4일</span><span><b>서비스</b>선물 포장</span></div>
+      <div class="option-row"><label>옵션<select id="modalOption"></select></label><label>수량<div class="quantity"><button id="qtyMinus">−</button><span id="qty">1</span><button id="qtyPlus">＋</button></div></label></div>
+      <button class="cta add" id="addToCart">장바구니 담기</button>
+    </div>
+  </section>
+
+  <aside class="drawer" id="drawer" aria-label="장바구니">
+    <div class="drawer-head"><h2>Shopping bag</h2><button class="close" id="cartClose" aria-label="장바구니 닫기">×</button></div>
+    <div class="cart-items" id="cartItems"></div><div class="total"><span>합계</span><span id="cartTotal">₩0</span></div><button class="cta add" id="checkout">주문하기</button>
+  </aside>
+  <div class="toast" id="toast">장바구니에 담았습니다.</div>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Noir Rose Earrings', category: 'earring', label: 'EARRING', price: 49000, crop: 'crop-small p1', badge: 'NEW', material: '925 Silver', description: '입체적인 장미 모티프를 절제된 실버 톤으로 완성한 이어링입니다.' },
+      { id: 2, name: 'Emerald Signet Ring', category: 'ring', label: 'RING', price: 78000, crop: 'crop-small p2', badge: 'BEST', material: '925 Silver · Emerald', description: '선명한 그린 스톤과 단단한 실버 밴드가 균형을 이루는 시그넷 링입니다.' },
+      { id: 3, name: 'Coin Chain Necklace', category: 'necklace', label: 'NECKLACE', price: 94000, crop: 'crop-small p3', badge: '', material: '925 Silver', description: '빈티지 코인과 서로 다른 체인의 리듬이 매력적인 레이어드 네크리스입니다.' },
+      { id: 4, name: 'Amethyst Bead Necklace', category: 'necklace', label: 'NECKLACE', price: 69000, crop: 'crop-small p4', badge: 'NEW', material: 'Amethyst · Silver', description: '차분한 보랏빛 자수정 비즈에 가는 실버 체인을 더한 섬세한 네크리스입니다.' },
+      { id: 5, name: 'Bold Link Necklace', category: 'necklace', label: 'NECKLACE', price: 109000, crop: 'crop-small p5', badge: 'BEST', material: '925 Silver', description: '볼드한 링크가 목선을 따라 자연스럽게 흐르는 존재감 있는 체인 네크리스입니다.' },
+      { id: 6, name: 'Lapis Coin Necklace', category: 'necklace', label: 'NECKLACE', price: 72000, crop: 'crop-small p6', badge: '', material: 'Lapis · Silver', description: '깊은 청색 비즈와 작은 코인 펜던트가 매일의 룩에 잔잔한 포인트를 줍니다.' },
+      { id: 7, name: 'Classic Curb Necklace', category: 'necklace', label: 'NECKLACE', price: 98000, crop: 'crop-small p7', badge: '', material: '925 Silver', description: '촘촘하게 맞물린 커브 체인의 광택이 단정하고 모던한 인상을 만듭니다.' },
+      { id: 8, name: 'Silver Sphere Necklace', category: 'necklace', label: 'NECKLACE', price: 119000, crop: 'crop-small p8', badge: 'BEST', material: '925 Silver', description: '크기가 다른 실버 볼이 리드미컬하게 이어지는 조형적인 네크리스입니다.' },
+      { id: 9, name: 'Fine Layered Chain', category: 'necklace', label: 'NECKLACE', price: 64000, crop: 'crop-small p9', badge: '', material: '925 Silver', description: '빛을 가볍게 머금는 두 줄의 체인으로 단정하게 레이어링한 네크리스입니다.' },
+      { id: 10, name: 'Garnet Drop Necklace', category: 'necklace', label: 'NECKLACE', price: 76000, crop: 'crop-large p10', badge: 'NEW', material: 'Garnet · Silver', description: '와인빛 가넷과 작은 드롭 장식이 차분한 우아함을 전합니다.' },
+      { id: 11, name: 'Turquoise Collar', category: 'necklace', label: 'NECKLACE', price: 88000, crop: 'crop-large p11', badge: '', material: 'Turquoise · Silver', description: '맑은 터키석 비즈를 촘촘히 엮어 얼굴빛을 생기 있게 밝혀주는 네크리스입니다.' },
+      { id: 12, name: 'Honey Amethyst Necklace', category: 'necklace', label: 'NECKLACE', price: 82000, crop: 'crop-large p12', badge: '', material: 'Amethyst · Quartz', description: '자수정 사이에 따뜻한 꿀빛 스톤을 더한 부드럽고 독특한 조합입니다.' },
+      { id: 13, name: 'Tiger Eye Tail Necklace', category: 'necklace', label: 'NECKLACE', price: 79000, crop: 'crop-large p13', badge: 'NEW', material: 'Tiger Eye · Silver', description: '깊은 갈색 타이거아이와 고래 꼬리 펜던트가 자연의 이미지를 담아냅니다.' }
+    ];
+
+    const state = { current: null, qty: 1, cart: JSON.parse(localStorage.getItem('yeonjo-cart') || '[]') };
+    const grid = document.getElementById('productGrid');
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('modal');
+    const drawer = document.getElementById('drawer');
+    const money = value => `₩${value.toLocaleString('ko-KR')}`;
+
+    function renderProducts(filter = 'all') {
+      grid.innerHTML = products.filter(p => filter === 'all' || p.category === filter).map(p => `
+        <article class="product">
+          <button class="product-image ${p.crop}" data-id="${p.id}" aria-label="${p.name} 상세 보기">${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</button>
+          <div class="product-info"><div><small>${p.label}</small><h3>${p.name}</h3></div><span class="price">${money(p.price)}</span></div>
+        </article>`).join('');
+      document.querySelectorAll('.product-image').forEach(btn => btn.addEventListener('click', () => openProduct(Number(btn.dataset.id))));
+    }
+
+    function openProduct(id) {
+      state.current = products.find(p => p.id === id);
+      state.qty = 1;
+      document.getElementById('qty').textContent = '1';
+      document.getElementById('modalCategory').textContent = state.current.label;
+      document.getElementById('modalName').textContent = state.current.name;
+      document.getElementById('modalPrice').textContent = money(state.current.price);
+      document.getElementById('modalDescription').textContent = state.current.description;
+      document.getElementById('modalMaterial').textContent = state.current.material;
+      const image = document.getElementById('modalImage');
+      image.className = `modal-image ${state.current.crop}`;
+      const options = state.current.category === 'ring' ? ['9호', '11호', '13호', '15호', '17호'] : state.current.category === 'necklace' ? ['40cm', '42cm', '45cm', '50cm'] : ['기본'];
+      document.getElementById('modalOption').innerHTML = options.map(o => `<option>${o}</option>`).join('');
+      overlay.classList.add('open');
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePanels() {
+      overlay.classList.remove('open');
+      modal.classList.remove('open');
+      drawer.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function renderCart() {
+      const wrap = document.getElementById('cartItems');
+      const count = state.cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cartCount').textContent = count;
+      document.getElementById('cartTotal').textContent = money(state.cart.reduce((sum, item) => sum + item.price * item.qty, 0));
+      wrap.innerHTML = state.cart.length ? state.cart.map((item, index) => `<div class="cart-item"><div><b>${item.name}</b><small style="display:block;color:#788;margin-top:5px">${item.option} · ${item.qty}개</small></div><div><span>${money(item.price * item.qty)}</span><button data-remove="${index}" aria-label="삭제">×</button></div></div>`).join('') : '<div class="empty">아직 담긴 상품이 없습니다.</div>';
+      wrap.querySelectorAll('[data-remove]').forEach(btn => btn.addEventListener('click', () => { state.cart.splice(Number(btn.dataset.remove), 1); saveCart(); }));
+    }
+
+    function saveCart() {
+      localStorage.setItem('yeonjo-cart', JSON.stringify(state.cart));
+      renderCart();
+    }
+
+    function openCart() {
+      modal.classList.remove('open');
+      overlay.classList.add('open');
+      drawer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.querySelectorAll('.filter').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.filter);
+    }));
+    document.getElementById('qtyMinus').addEventListener('click', () => { state.qty = Math.max(1, state.qty - 1); document.getElementById('qty').textContent = state.qty; });
+    document.getElementById('qtyPlus').addEventListener('click', () => { state.qty += 1; document.getElementById('qty').textContent = state.qty; });
+    document.getElementById('addToCart').addEventListener('click', () => {
+      state.cart.push({ product_id: state.current.id, name: state.current.name, price: state.current.price, qty: state.qty, option: document.getElementById('modalOption').value });
+      saveCart();
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+      openCart();
+    });
+    document.getElementById('cartOpen').addEventListener('click', openCart);
+    document.getElementById('modalClose').addEventListener('click', closePanels);
+    document.getElementById('cartClose').addEventListener('click', closePanels);
+    overlay.addEventListener('click', closePanels);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanels(); });
+    // 실제 주문 처리는 customer.js에서 인증 상태를 확인한 뒤 진행합니다.
+
+    const messages = ['첫 구매 10% 할인 · 코드 WELCOME10', '5만원 이상 무료배송 · 평일 2시 이전 당일 발송', '무료 선물 포장 · 마음을 담아 보내세요'];
+    let messageIndex = 0;
+    if (localStorage.getItem('yeonjo-promo-closed')) document.getElementById('promo').style.display = 'none';
+    setInterval(() => { messageIndex = (messageIndex + 1) % messages.length; document.getElementById('promoText').textContent = messages[messageIndex]; }, 3500);
+    document.getElementById('promoClose').addEventListener('click', () => { document.getElementById('promo').style.display = 'none'; localStorage.setItem('yeonjo-promo-closed', '1'); });
+
+    renderProducts();
+    renderCart();
+  </script>
+  <script src="config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="customer.js"></script>
+</body>
+</html>
