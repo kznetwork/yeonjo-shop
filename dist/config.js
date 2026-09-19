@@ -1,7 +1,7 @@
 window.YEONJO_CONFIG = {
   supabaseUrl: 'https://dzwivjvhuklqrjjsvkjl.supabase.co',
   supabaseKey: 'sb_publishable_icw6ZiuwtcHgvc3QnblVBg_cwUV3ZSa',
-  googleAnalyticsId: '',
+  googleAnalyticsId: 'G-LV21ZDXTKL',
   clarityProjectId: '',
   shipping: {
     carrier: 'CJ대한통운',
