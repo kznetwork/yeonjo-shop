@@ -108,8 +108,18 @@
     content.innerHTML = '<div class="topline"><div><p class="kicker">MEMBERS</p><h2>회원관리</h2></div></div><p>불러오는 중입니다.</p>';
     try {
       const rows = await db.request('profiles', { query:'select=*&order=created_at.desc' });
-      content.innerHTML = `<div class="topline"><div><p class="kicker">MEMBERS</p><h2>회원관리</h2></div><span>${rows.length}명</span></div><div class="table-wrap"><table><thead><tr><th>가입일</th><th>회원</th><th>권한</th><th>상태</th><th></th></tr></thead><tbody>${rows.map(member => `<tr><td>${new Date(member.created_at).toLocaleDateString('ko-KR')}</td><td>${escapeHtml(member.full_name || '-')}<br><small>${escapeHtml(member.email)}</small></td><td><select data-role="${member.id}" ${profile.role !== 'super_admin' ? 'disabled' : ''}>${Object.entries(roleLabels).map(([value,label]) => `<option value="${value}" ${value === member.role ? 'selected' : ''}>${label}</option>`).join('')}</select></td><td>${member.active ? '활성' : '정지'}</td><td><button data-active="${member.id}" data-value="${member.active}" ${profile.role !== 'super_admin' ? 'disabled' : ''}>${member.active ? '정지' : '활성화'}</button></td></tr>`).join('')}</tbody></table></div>`;
-      document.querySelectorAll('[data-role]').forEach(select => select.onchange = () => db.request('profiles', { method:'PATCH', query:`id=eq.${select.dataset.role}`, body:{ role:select.value, updated_at:new Date().toISOString() } }));
+      const canManageMembers = profile.role === 'super_admin';
+      content.innerHTML = `<div class="topline"><div><p class="kicker">MEMBERS</p><h2>회원관리</h2></div><span>${rows.length}명</span></div><div class="table-wrap"><table><thead><tr><th>가입일</th><th>회원</th><th>권한</th><th>상태</th><th></th></tr></thead><tbody>${rows.map(member => `<tr><td>${new Date(member.created_at).toLocaleDateString('ko-KR')}</td><td>${escapeHtml(member.full_name || '-')}<br><small>${escapeHtml(member.email)}</small></td><td><select data-role="${member.id}" ${canManageMembers ? '' : 'disabled'}>${Object.entries(roleLabels).map(([value,label]) => `<option value="${value}" ${value === member.role ? 'selected' : ''}>${label}</option>`).join('')}</select></td><td>${member.active ? '활성' : '정지'}</td><td>${canManageMembers ? `<button data-save-role="${member.id}">변경</button> <button data-active="${member.id}" data-value="${member.active}">${member.active ? '정지' : '활성화'}</button>` : '<span>최고 관리자만 변경 가능</span>'}</td></tr>`).join('')}</tbody></table></div>`;
+      document.querySelectorAll('[data-save-role]').forEach(button => button.onclick = async () => {
+        const member = rows.find(item => item.id === button.dataset.saveRole);
+        const select = document.querySelector(`[data-role="${button.dataset.saveRole}"]`);
+        try {
+          await db.request('profiles', { method:'PATCH', query:`id=eq.${button.dataset.saveRole}`, body:{ role:select.value, updated_at:new Date().toISOString() } });
+          button.textContent = '변경됨';
+          setTimeout(() => { button.textContent = '변경'; }, 1400);
+          if (member.id === profile.id) profile.role = select.value;
+        } catch (error) { button.textContent = error.message; }
+      });
       document.querySelectorAll('[data-active]').forEach(button => button.onclick = async () => { await db.request('profiles', { method:'PATCH', query:`id=eq.${button.dataset.active}`, body:{ active:button.dataset.value !== 'true', updated_at:new Date().toISOString() } }); members(); });
     } catch (error) { content.innerHTML += `<p class="message">${escapeHtml(error.message)}</p>`; }
   }
