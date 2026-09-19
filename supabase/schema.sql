@@ -161,7 +161,7 @@ create policy "Users update own profile" on public.profiles for update using (id
 create policy "Super admin manages profiles" on public.profiles for update using (public.is_super_admin()) with check (public.is_super_admin());
 
 create policy "Public reads active products" on public.products for select using (active = true or public.is_admin());
-create policy "Super admin manages products" on public.products for all using (public.is_super_admin()) with check (public.is_super_admin());
+create policy "Admins manage products" on public.products for all using (public.is_admin()) with check (public.is_admin());
 
 create policy "Users create own orders" on public.orders for insert with check (user_id = auth.uid());
 create policy "Users read own orders" on public.orders for select using (user_id = auth.uid() or public.is_admin());
