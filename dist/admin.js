@@ -66,7 +66,7 @@
     content.innerHTML = '<div class="topline"><div><p class="kicker">PRODUCTS</p><h2>상품관리</h2></div></div><p>불러오는 중입니다.</p>';
     try {
       const rows = await db.request('products', { query:'select=*&order=sort_order.asc,created_at.desc' });
-      const canManage = profile.role === 'super_admin';
+      const canManage = profile.active && profile.role !== 'customer';
       content.innerHTML = `<div class="topline"><div><p class="kicker">PRODUCTS</p><h2>상품관리</h2></div><button id="newProduct" ${canManage ? '' : 'disabled'}>상품 추가</button></div><div class="table-wrap"><table><thead><tr><th>상품명</th><th>카테고리</th><th>판매가</th><th>재고</th><th>판매 상태</th><th></th></tr></thead><tbody>${rows.length ? rows.map(item => `<tr><td><b>${escapeHtml(item.name)}</b><br><small>${escapeHtml(item.material || '-')}</small></td><td>${escapeHtml(productCategory(item.category))}</td><td>${money(item.price)}</td><td>${Number(item.inventory || 0)}개</td><td><span class="status">${item.active ? '판매 중' : '판매 중지'}</span></td><td><button data-product="${item.id}" ${canManage ? '' : 'disabled'}>수정</button></td></tr>`).join('') : '<tr><td colspan="6">등록된 상품이 없습니다.</td></tr>'}</tbody></table></div><div id="productEditor"></div>`;
       document.getElementById('newProduct').onclick = () => editProduct();
       document.querySelectorAll('[data-product]').forEach(button => button.onclick = () => editProduct(rows.find(item => item.id === Number(button.dataset.product))));
