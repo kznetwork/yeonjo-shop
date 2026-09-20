@@ -20,7 +20,7 @@
     profile = await currentProfile();
     if (!profile || profile.role === 'customer' || !profile.active) {
       db.signOut();
-      throw new Error('관리자 권한이 없는 계정입니다.');
+      throw new Error('일반 회원 계정입니다. 쇼핑몰 메인 화면의 ME 메뉴에서 이용해 주세요.');
     }
     shell();
     dashboard();
@@ -77,12 +77,33 @@
 
   function editProduct(item = null) {
     const target = document.getElementById('productEditor');
-    target.innerHTML = `<div class="panel" style="margin-top:18px"><h3>${item ? '상품 수정' : '새 상품 등록'}</h3><form class="editor" id="productForm"><label>상품명<input name="name" required value="${escapeHtml(item?.name || '')}"></label><label>카테고리<select name="category">${[['necklace','네크리스'],['ring','링'],['earring','이어링']].map(([value,label]) => `<option value="${value}" ${item?.category === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label><label>판매가<input name="price" type="number" min="0" required value="${item?.price || 0}"></label><label>재고 수량<input name="inventory" type="number" min="0" required value="${item?.inventory || 0}"></label><label>소재<input name="material" value="${escapeHtml(item?.material || '')}"></label><label>뱃지<select name="badge"><option value="">없음</option><option value="NEW" ${item?.badge === 'NEW' ? 'selected' : ''}>NEW</option><option value="BEST" ${item?.badge === 'BEST' ? 'selected' : ''}>BEST</option></select></label><label class="wide">상품 설명<input name="description" value="${escapeHtml(item?.description || '')}"></label><label>정렬 순서<input name="sort_order" type="number" min="0" value="${item?.sort_order || 0}"></label><label>판매 상태<select name="active"><option value="true" ${item?.active !== false ? 'selected' : ''}>판매 중</option><option value="false" ${item?.active === false ? 'selected' : ''}>판매 중지</option></select></label><p class="message wide" id="productMessage"></p><button class="wide" type="submit">${item ? '상품 저장' : '상품 등록'}</button></form></div>`;
+    target.innerHTML = `<div class="panel" style="margin-top:18px"><h3>${item ? '상품 수정' : '새 상품 등록'}</h3><form class="editor" id="productForm"><label>상품명<input name="name" required value="${escapeHtml(item?.name || '')}"></label><label>카테고리<select name="category">${[['necklace','네크리스'],['ring','링'],['earring','이어링']].map(([value,label]) => `<option value="${value}" ${item?.category === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label><label>판매가<input name="price" type="number" min="0" required value="${item?.price || 0}"></label><label>재고 수량<input name="inventory" type="number" min="0" required value="${item?.inventory || 0}"></label><label>소재<input name="material" value="${escapeHtml(item?.material || '')}"></label><label>뱃지<select name="badge"><option value="">없음</option><option value="NEW" ${item?.badge === 'NEW' ? 'selected' : ''}>NEW</option><option value="BEST" ${item?.badge === 'BEST' ? 'selected' : ''}>BEST</option></select></label><label class="wide">대표 이미지<input name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><div class="image-preview wide" id="imagePreview">${item?.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="현재 대표 이미지">` : '<span>JPG, PNG, WEBP · 최대 5MB</span>'}</div><label class="wide">상품 설명<input name="description" value="${escapeHtml(item?.description || '')}"></label><label>정렬 순서<input name="sort_order" type="number" min="0" value="${item?.sort_order || 0}"></label><label>판매 상태<select name="active"><option value="true" ${item?.active !== false ? 'selected' : ''}>판매 중</option><option value="false" ${item?.active === false ? 'selected' : ''}>판매 중지</option></select></label><p class="message wide" id="productMessage"></p><button class="wide" type="submit">${item ? '상품 저장' : '상품 등록'}</button></form></div>`;
+    const imageInput = document.querySelector('#productForm [name=image]');
+    imageInput.onchange = () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+        imageInput.value = '';
+        document.getElementById('productMessage').textContent = 'JPG, PNG, WEBP 형식의 5MB 이하 이미지를 선택해 주세요.';
+        return;
+      }
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = '';
+      const image = document.createElement('img');
+      image.src = URL.createObjectURL(file);
+      image.alt = '선택한 대표 이미지 미리보기';
+      preview.appendChild(image);
+    };
     document.getElementById('productForm').onsubmit = async event => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
+      const file = data.get('image');
       const body = { name:data.get('name'), category:data.get('category'), price:Number(data.get('price')), inventory:Number(data.get('inventory')), material:data.get('material') || null, badge:data.get('badge') || null, description:data.get('description') || null, sort_order:Number(data.get('sort_order')), active:data.get('active') === 'true', updated_at:new Date().toISOString() };
       try {
+        if (file?.size) {
+          const extension = file.name.split('.').pop().toLowerCase();
+          body.image_url = await db.uploadProductImage(file, `${Date.now()}-${crypto.randomUUID()}.${extension}`);
+        }
         if (item) await db.request('products', { method:'PATCH', query:`id=eq.${item.id}`, body });
         else await db.request('products', { method:'POST', body });
         products();
@@ -137,4 +158,3 @@
   document.getElementById('adminLogin').onsubmit = async event => { event.preventDefault(); const data = new FormData(event.currentTarget); try { await authenticate(data.get('email'), data.get('password')); } catch (error) { document.getElementById('loginMessage').textContent = error.message; } };
   currentProfile().then(result => { if (result && result.role !== 'customer' && result.active) { profile = result; shell(); dashboard(); } });
 })();
-
