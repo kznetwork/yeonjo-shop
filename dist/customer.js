@@ -53,13 +53,32 @@
     openMember();
   }
 
-  async function accountView() {
+  async function accountView(notice = '') {
     const current = db.session(); if (!current?.user) return authView(); let orders = []; let memberProfile;
     try { orders = await db.request('orders', { query:`user_id=eq.${current.user.id}&select=*&order=created_at.desc` }); } catch {}
     try { [memberProfile] = await db.request('profiles', { query:`id=eq.${current.user.id}&select=role,active` }); } catch {}
     const adminLink = memberProfile?.active && memberProfile.role !== 'customer' ? '<a class="secondary-btn" href="admin.html">관리자 페이지</a>' : '';
-    document.getElementById('memberCard').innerHTML = `<button class="icon-btn member-close" aria-label="닫기">×</button><span class="eyebrow">My account</span><h2>나의 YEONJO</h2><p>${current.user.email}</p><div class="my-orders">${orders.length ? orders.map(order => `<article class="my-order"><header><b>${order.order_number}</b><span>${labels[order.status]}</span></header><small>${new Date(order.created_at).toLocaleDateString('ko-KR')} · ${order.total.toLocaleString('ko-KR')}원</small></article>`).join('') : '<p>아직 주문 내역이 없습니다.</p>'}</div><div class="member-actions"><button class="secondary-btn" id="logout">로그아웃</button>${adminLink}</div>`;
-    document.querySelector('.member-close').onclick = closeMember; document.getElementById('logout').onclick = () => { db.signOut(); closeMember(); }; openMember();
+    document.getElementById('memberCard').innerHTML = `<button class="icon-btn member-close" aria-label="닫기">×</button><span class="eyebrow">My account</span><h2>나의 YEONJO</h2><p>${current.user.email}</p><div class="my-orders">${orders.length ? orders.map(order => `<article class="my-order"><header><b>${order.order_number}</b><span>${labels[order.status]}</span></header><small>${new Date(order.created_at).toLocaleDateString('ko-KR')} · ${order.total.toLocaleString('ko-KR')}원</small></article>`).join('') : '<p>아직 주문 내역이 없습니다.</p>'}</div><p class="form-message">${notice}</p><div class="member-actions"><button class="secondary-btn" id="passwordChange">비밀번호 변경</button><button class="secondary-btn" id="logout">로그아웃</button>${adminLink}</div>`;
+    document.querySelector('.member-close').onclick = closeMember; document.getElementById('logout').onclick = () => { db.signOut(); closeMember(); }; document.getElementById('passwordChange').onclick = passwordView; openMember();
+  }
+
+  function passwordView(message = '') {
+    const current = db.session();
+    if (!current?.user) return authView();
+    document.getElementById('memberCard').innerHTML = `<button class="icon-btn member-close" aria-label="닫기">×</button><span class="eyebrow">Security</span><h2>비밀번호 변경</h2><p>현재 비밀번호를 확인한 뒤 새 비밀번호로 변경합니다.</p><form class="member-form" id="passwordForm"><label>현재 비밀번호<input name="currentPassword" type="password" minlength="8" required autocomplete="current-password"></label><label>새 비밀번호<input name="newPassword" type="password" minlength="8" required autocomplete="new-password"></label><label>새 비밀번호 확인<input name="confirmPassword" type="password" minlength="8" required autocomplete="new-password"></label><div class="form-message">${message}</div><button class="cta add" type="submit">비밀번호 변경</button><button class="secondary-btn" type="button" id="passwordBack">돌아가기</button></form>`;
+    document.querySelector('.member-close').onclick = closeMember;
+    document.getElementById('passwordBack').onclick = () => accountView();
+    document.getElementById('passwordForm').onsubmit = async event => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      if (data.get('newPassword') !== data.get('confirmPassword')) return passwordView('새 비밀번호가 서로 일치하지 않습니다.');
+      try {
+        await db.signIn(current.user.email, data.get('currentPassword'));
+        await db.updatePassword(data.get('newPassword'));
+        await accountView('비밀번호를 변경했습니다.');
+      } catch (error) { passwordView(error.message); }
+    };
+    openMember();
   }
 
   function checkoutView() {
