@@ -23,7 +23,8 @@
         crop: `${index < 9 ? 'crop-small' : 'crop-large'} p${(index % 13) + 1}`,
         badge: product.badge || '',
         material: product.material || '',
-        description: product.description || ''
+        description: product.description || '',
+        image_url: product.image_url || ''
       }));
       renderProducts();
     } catch (error) {
@@ -53,9 +54,11 @@
   }
 
   async function accountView() {
-    const current = db.session(); if (!current?.user) return authView(); let orders = [];
+    const current = db.session(); if (!current?.user) return authView(); let orders = []; let memberProfile;
     try { orders = await db.request('orders', { query:`user_id=eq.${current.user.id}&select=*&order=created_at.desc` }); } catch {}
-    document.getElementById('memberCard').innerHTML = `<button class="icon-btn member-close" aria-label="닫기">×</button><span class="eyebrow">My account</span><h2>나의 YEONJO</h2><p>${current.user.email}</p><div class="my-orders">${orders.length ? orders.map(order => `<article class="my-order"><header><b>${order.order_number}</b><span>${labels[order.status]}</span></header><small>${new Date(order.created_at).toLocaleDateString('ko-KR')} · ${order.total.toLocaleString('ko-KR')}원</small></article>`).join('') : '<p>아직 주문 내역이 없습니다.</p>'}</div><div class="member-actions"><button class="secondary-btn" id="logout">로그아웃</button><a class="secondary-btn" href="admin.html">관리자 페이지</a></div>`;
+    try { [memberProfile] = await db.request('profiles', { query:`id=eq.${current.user.id}&select=role,active` }); } catch {}
+    const adminLink = memberProfile?.active && memberProfile.role !== 'customer' ? '<a class="secondary-btn" href="admin.html">관리자 페이지</a>' : '';
+    document.getElementById('memberCard').innerHTML = `<button class="icon-btn member-close" aria-label="닫기">×</button><span class="eyebrow">My account</span><h2>나의 YEONJO</h2><p>${current.user.email}</p><div class="my-orders">${orders.length ? orders.map(order => `<article class="my-order"><header><b>${order.order_number}</b><span>${labels[order.status]}</span></header><small>${new Date(order.created_at).toLocaleDateString('ko-KR')} · ${order.total.toLocaleString('ko-KR')}원</small></article>`).join('') : '<p>아직 주문 내역이 없습니다.</p>'}</div><div class="member-actions"><button class="secondary-btn" id="logout">로그아웃</button>${adminLink}</div>`;
     document.querySelector('.member-close').onclick = closeMember; document.getElementById('logout').onclick = () => { db.signOut(); closeMember(); }; openMember();
   }
 
@@ -77,4 +80,3 @@
 
   document.getElementById('accountOpen').addEventListener('click', accountView); document.getElementById('checkout').addEventListener('click', checkoutView); track(); loadCatalog();
 })();
-
