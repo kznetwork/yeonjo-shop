@@ -50,11 +50,48 @@
     return data;
   }
 
+  async function uploadProductImage(file, path) {
+    const current = session();
+    const response = await fetch(`${config.supabaseUrl}/storage/v1/object/product-images/${path}`, {
+      method: 'POST',
+      headers: {
+        apikey: config.supabaseKey,
+        Authorization: `Bearer ${current?.access_token || config.supabaseKey}`,
+        'Content-Type': file.type,
+        'x-upsert': 'false'
+      },
+      body: file
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || data.error || '이미지 업로드에 실패했습니다.');
+    return `${config.supabaseUrl}/storage/v1/object/public/product-images/${path}`;
+  }
+
+  async function updatePassword(password) {
+    const current = session();
+    if (!current?.access_token) throw new Error('로그인이 필요합니다.');
+    const response = await fetch(`${config.supabaseUrl}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        apikey: config.supabaseKey,
+        Authorization: `Bearer ${current.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.msg || data.message || '비밀번호를 변경하지 못했습니다.');
+    if (data.access_token) saveSession(data);
+    return data;
+  }
+
   window.yeonjoDb = {
     session,
     signUp: (email, password, fullName) => authRequest('signup', { email, password, data: { full_name: fullName } }),
     signIn: (email, password) => authRequest('token?grant_type=password', { email, password }),
     signOut: () => saveSession(null),
-    request
+    request,
+    uploadProductImage,
+    updatePassword
   };
 })();
